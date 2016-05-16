@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>Web Socket JavaScript Echo Client</title>
+<script type="text/javascript" >
+	var echo_websocket;
+	
+	function init(){
+		output =document.getElementById("output");
+	}
+	function send_echo(){
+		var wsUri ="ws://localhost:8080/WebSocket/echo";
+		writeToScreen("Connecting to"+wsUri);
+		echo_websocket = new WebSocket(wsUri);
+		
+		echo_websocket.onopen = function(evt){
+			writeToScreen("Connected!!!!");
+			doSend(textID.value);
+		};
+		
+		echo_websocket.onmessage = function(evt){
+			writeToScreen("傳送訊息:"+evt.data);
+			echo_websocket.close();
+		};
+		
+		echo_websocket.onerror = function(evt){
+			writeToScreen("<span style='color:red;'> 錯誤:</span>"+evt.data);
+			echo_websocket.close();
+		}
+
+	}
+	
+	function doSend(message){
+		echo_websocket.send(message);
+		writeToScreen("發送消息:"+message);
+	}
+	
+	function writeToScreen(message){
+		var pre =document.createElement("p");
+		pre.style.wordWrap="break-word";
+		pre.innerHTML = message;
+		output.appendChild(pre);
+	}
+	
+	window.addEventListener("load", init, false);
+	
+</script>
+</head>
+<body>
+	<H1>Echo Server</H1>
+	
+	<div style="text-align:left;">
+		<FORM action="">
+			<input onclick="send_echo()" value="按下去發送" type="button">
+			<input id="textID" name="message" value="Hello Web Socket" type="text">
+			<br>
+		
+		</FORM>
+		
+	</div>
+	<div id="output"></div>
+
+</body>
+</html>
